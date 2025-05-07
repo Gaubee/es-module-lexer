@@ -5,7 +5,7 @@
 import fs from 'fs';
 import c from 'kleur';
 
-const n = 25;
+const n = 100;
 
 const files = fs.readdirSync('test/samples')
 	.map(f => `test/samples/${f}`)

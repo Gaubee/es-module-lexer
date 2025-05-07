@@ -4,9 +4,9 @@ default-task = 'build'
 extensions = ['chomp@0.1:npm', 'chomp@0.1:footprint', 'chomp@0.1:terser']
 
 [env-default]
-WASI_PATH = '../wasi-sdk-12.0'
-EMSDK_PATH = '../emsdk'
-WABT_PATH = '../wabt'
+WASI_PATH = '../../tools/wasi-sdk-25.0'
+EMSDK_PATH = '../../tools/emsdk'
+WABT_PATH = '../../tools/wabt-1.0.37'
 
 [[task]]
 name = 'build'
@@ -106,12 +106,12 @@ target = 'lib/lexer.emcc.asm.js'
 deps = ['src/lexer.h', 'src/lexer.c']
 env = { PYTHONHOME = '' }
 run = """
-	${{ EMSDK_PATH }}/emsdk install 1.40.1-fastcomp
-	${{ EMSDK_PATH }}/emsdk activate 1.40.1-fastcomp
+	# ${{ EMSDK_PATH }}/emsdk install latest
+	# ${{ EMSDK_PATH }}/emsdk activate latest
 
-	${{ EMSDK_PATH }}/fastcomp/emscripten/emcc ./src/lexer.c -o lib/lexer.emcc.js -s WASM=0 -Oz --closure 1 \
+	${{ EMSDK_PATH }}/upstream/emscripten/emcc ./src/lexer.c -o lib/lexer.emcc.js -s WASM=0 -Oz --closure 1 \
 	-s EXPORTED_FUNCTIONS="['_parse','_sa','_e','_ri','_re','_it','_is','_ie','_ss','_ip','_se','_ai','_id','_es','_ee','_els','_ele','_f','_ms','_setSource']" \
-	-s ERROR_ON_UNDEFINED_SYMBOLS=0 -s SINGLE_FILE=1 -s TOTAL_STACK=4997968 -s --separate-asm -Wno-logical-op-parentheses -Wno-parentheses
+	-s ERROR_ON_UNDEFINED_SYMBOLS=0 -s SINGLE_FILE=1 -s TOTAL_STACK=4997968 -s -Wno-logical-op-parentheses -Wno-parentheses
 
 	# rm lib/lexer.emcc.js
 """

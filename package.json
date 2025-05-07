@@ -18,8 +18,9 @@
     }
   },
   "scripts": {
-    "build": "npm install -g chomp ; chomp build",
-    "test": "npm install -g chomp ; chomp test"
+    "build": "npx chomp build",
+    "bench": "npx chomp bench",
+    "test": "npx chomp test"
   },
   "author": "Guy Bedford",
   "license": "MIT",
