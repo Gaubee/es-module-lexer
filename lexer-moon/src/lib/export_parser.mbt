@@ -157,7 +157,6 @@ pub fn try_parse_export_statement(lexer: Lexer)->Unit {
         if lexer.has_error { return }
 
         let mut local_name = false
-        let mut decl_start_pos = lexer.pos
         match ch {
           CHAR_A => { // async function
             if source_matches(lexer, lexer.pos + 1, word_sync_kw) && is_br_or_ws(lexer.source[lexer.pos + 5]) {
@@ -366,9 +365,11 @@ pub fn try_parse_export_statement(lexer: Lexer)->Unit {
     // C: Nullify local_start/local_end for exports from this 'from' clause
     // This means `export {a as b} from "m"` -> exported: "b", local: null
     // If `num_exports_before` is index of first export in this statement:
-    for i = num_exports_before; i < lexer.exports.length(); i += 1 {
+    for i = num_exports_before; i < lexer.exports.length(); i = i + 1 {
       let current_export = lexer.exports[i]
-      lexer.exports[i] = { current_export with local_start: None, local_end: None }
+      lexer.exports[i] = {
+        ..current_export,
+         local_start: None, local_end: None }
     }
   } else {
     // Not 'from', backtrack so main loop can see `ch`

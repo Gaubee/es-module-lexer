@@ -141,6 +141,8 @@ pub const CHAR_N : UInt16 = 110
 
 ///| 'o'
 pub const CHAR_O : UInt16 = 111
+///| 'p'
+pub const CHAR_P : UInt16 = 112
 
 ///| 'r'
 pub const CHAR_R : UInt16 = 114
@@ -227,10 +229,10 @@ pub const CHAR_GT : UInt16 = 62
 pub const CHAR_EQ : UInt16 = 61
 
 /// '0'
-pub const char_0 : UInt16 = 48
+pub const CHAR_0 : UInt16 = 48
 
 /// '9'
-pub const char_9 : UInt16 = 57
+pub const CHAR_9 : UInt16 = 57
 
 ///| ' '
 pub const CHAR_SPACE : UInt16 = 32
@@ -255,8 +257,8 @@ pub const CHAR_NON_BREAKING_SPACE : UInt16 = 160
 
 // Sentinel for lastTokenPos when no token has been seen yet
 /// -1
-pub const no_token_pos : Int = -1
+pub const NO_TOKEN_POS : Int = -1
 
 // Character to simulate *EMPTY_CHAR in C
 /// '\0'
-pub const empty_char_code : UInt16 = 0 // '\0'
+pub const EMPTY_CHAR_CODE : UInt16 = 0 // '\0'

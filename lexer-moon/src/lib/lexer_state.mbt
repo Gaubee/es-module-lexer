@@ -10,8 +10,8 @@ pub struct Lexer {
   // Parser state
   mut facade : Bool
   mut has_module_syntax : Bool
-  last_slash_was_division : Bool
-  next_brace_is_class : Bool
+  mut last_slash_was_division : Bool
+  mut next_brace_is_class : Bool
 
   // Tokenizer state
   open_token_stack : Array[OpenToken] // Corresponds to openTokenStack_
@@ -20,7 +20,7 @@ pub struct Lexer {
   dynamic_import_stack : Array[Int] // Stores indices into `imports` Array
   // dynamicImportStackDepth is dynamic_import_stack.length()
 
-  mut last_token_pos : Int // Index of the last significant token, no_token_pos if none
+  mut last_token_pos : Int // Index of the last significant token, NO_TOKEN_POS if none
 
   // Error state
   mut has_error : Bool
@@ -30,13 +30,13 @@ pub struct Lexer {
 
   // Results
   // These are mutable and built up during parsing
-  pub imports : Array[Import]
-  pub exports : Array[Export]
+  imports : Array[Import]
+  exports : Array[Export]
 
   // Helper indices for managing imports list, similar to C's import_write_head etc.
   // These will store the index of the import in the `imports` Array.
-  current_import_idx : Int? // Index of the import being processed (e.g. dynamic import)
-  last_committed_import_idx : Int? // Index of the previously fully processed import
+  mut current_import_idx : Int? // Index of the import being processed (e.g. dynamic import)
+  mut last_committed_import_idx : Int? // Index of the previously fully processed import
 }
 
 ///|
@@ -52,7 +52,7 @@ pub fn new_lexer(source_code : Array[UInt16], length : Int) -> Lexer {
     next_brace_is_class: false,
     open_token_stack: Array::new(capacity=1024),
     dynamic_import_stack: Array::new(capacity=512),
-    last_token_pos: no_token_pos,
+    last_token_pos: NO_TOKEN_POS,
     has_error: false,
     error_pos: 0,
     imports: Array::new(),
@@ -64,9 +64,8 @@ pub fn new_lexer(source_code : Array[UInt16], length : Int) -> Lexer {
 
 ///| Methods for Lexer
 
-
 ///| while (lexer.read_next()) { ... }
-pub fn read_next(self: Lexer) -> Bool {
+pub fn read_next(self : Lexer) -> Bool {
   if self.pos < self.end_idx {
     self.pos += 1
     true
@@ -74,6 +73,7 @@ pub fn read_next(self: Lexer) -> Bool {
     false
   }
 }
+
 ///| Error handling
 pub fn syntax_error(self : Lexer) -> Unit {
   if not(self.has_error) { // Report first error only
@@ -99,7 +99,7 @@ pub fn current_char_or_default(self : Lexer, default_char : UInt16) -> UInt16 {
 }
 
 ///| Helper to get character at a specific index
-pub fn CHAR_AT_OR_DEFAULT(
+pub fn char_at_or_default(
   self : Lexer,
   index : Int,
   default_char : UInt16
@@ -113,8 +113,8 @@ pub fn CHAR_AT_OR_DEFAULT(
 
 ///| Helper to get character pointed by lastTokenPos
 pub fn get_last_token_char(self : Lexer) -> UInt16 {
-  if self.last_token_pos == no_token_pos {
-    empty_char_code // Simulate C's *EMPTY_CHAR
+  if self.last_token_pos == NO_TOKEN_POS {
+    EMPTY_CHAR_CODE // Simulate C's *EMPTY_CHAR
   } else {
     self.source[self.last_token_pos]
   }

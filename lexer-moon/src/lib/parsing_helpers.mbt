@@ -4,7 +4,7 @@ pub fn source_matches(lexer: Lexer, start_idx: Int, pattern: Array[UInt16]) -> B
   if start_idx < 0 || start_idx + pattern.length() > lexer.source_len {
     return false
   }
-  for i = 0; i < pattern.length(); i += 1 {
+  for i = 0; i < pattern.length(); i = i + 1 {
     if lexer.source[start_idx + i] != pattern[i] {
       return false
     }
@@ -29,14 +29,14 @@ pub fn is_spread(lexer : Lexer, idx : Int) -> Bool {
 ///|
 pub fn is_br_or_ws_or_punctuator_or_spread_not_dot(
   lexer : Lexer,
-  CHAR_IDX : Int
+  c_idx : Int
 ) -> Bool {
-  if CHAR_IDX < 0 || CHAR_IDX >= lexer.source_len {
+  if c_idx < 0 || c_idx >= lexer.source_len {
     return true
   } // Treat out of bounds as separator
-  let c = lexer.source[CHAR_IDX]
+  let c = lexer.source[c_idx]
   is_br_or_ws(c) ||
-  (is_punctuator(c) && (is_spread(lexer, CHAR_IDX) || c != CHAR_DOT))
+  (is_punctuator(c) && (is_spread(lexer, c_idx) || c != CHAR_DOT))
 }
 
 // Corresponds to keywordStart
@@ -133,7 +133,7 @@ pub fn comment_whitespace(lexer : Lexer, br_is_whitespace : Bool) -> UInt16 {
   return (0 : UInt16) // EOF
 }
 
-pub fn line_comment(lexer: Lexer) -> {
+pub fn line_comment(lexer: Lexer) -> Unit {
   lexer.pos += 2 // Skip "//"
   while lexer.pos < lexer.end_idx {
     let ch = lexer.source[lexer.pos]
@@ -368,8 +368,7 @@ pub fn is_expression_keyword(lexer: Lexer, at_pos: Int) -> Bool {
     CHAR_F => {// instanceof, typeof
       if at_pos < 3 { return false } // Needs "of" + one more char
       if prev_char != CHAR_O || lexer.source[at_pos - 2] != CHAR_E { return false } // ..eo[f]
-      let CHAR_BEFORE_EOF = lexer.source[at_pos - 3]
-      match CHAR_BEFORE_EOF {
+      match lexer.source[at_pos - 3] {
          // C: instan_kw is "instan", full "instanceof" length 10. Keyword ends at 'f'. pos-4 for "instan"
         CHAR_C => read_preceding_keywordn(lexer, at_pos - 4, word_instan_kw) // instan[ceof] 
         CHAR_P => read_preceding_keywordn(lexer, at_pos - 4, word_ty_kw)     // ty[peof]
